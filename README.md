@@ -1,6 +1,6 @@
 # neurogen
 
-An R package for creating generative art in R using Brain Imaging Data.  The `neurogen` was stems from a collaboration with [Tyler Wishard, UCLA](https://www.wishard.bio/c-v) for his proposal for the 2022 Organization of Human Brain Mapping in Glasgow, Scotland - which is titled ["Neuro-Fungible Tokens."](https://www.wishard.bio/art). 
+An R package for creating generative art using brain imaging data. `neurogen` was born from a collaboration between Daniel and [Tyler Wishard, UCLA](https://www.wishard.bio/c-v) on a proposal submitted for the 2022 Organization of Human Brain Mapping Conference in Glasgow, Scotland - which is titled ["Neuro-Fungible Tokens."](https://www.wishard.bio/art). 
 
 Tyler is a Ph.D. candidate in the Neuroscience Interdisciplinary Program at UCLA whose work focuses on multimodal MRI to determine neuroimaging-based markers of age-related memory decline and optimize non-invasive neuromodulation to improve older adults' cognitive outcomes.
 
