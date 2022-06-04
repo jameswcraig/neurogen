@@ -6,7 +6,7 @@ Tyler is a Ph.D. candidate in the Neuroscience Interdisciplinary Program at UCLA
 
 All example image data provided in package was produced using a 7-tesla MRI of Tyler Wishard's brain, aka 'Ty's Brain' and can be found in `inst/data`.
 
-<img src='vignettes/img/brain_warp_alt.gif' align = 'center' height = '750'/>
+<img src='vignettes/img/brain_warp_alt.gif' align = 'center'/>
 
 
 ## Installation
@@ -18,7 +18,7 @@ devtools::install_github("jameswcraig/neurogen")
 ## Usage
 
 ```
-library(neuro_gen)
+library(neurogen)
 
 # Get Ty's brain...
 nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
@@ -29,5 +29,5 @@ brain_warp(file = nii_path,
 )
 ```
 
-<img src='vignettes/img/brain_warp.gif' align = 'center' height = '750'/>
+<img src='vignettes/img/brain_warp.gif' align = 'center'/>
 
