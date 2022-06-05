@@ -2,32 +2,49 @@
 % Please edit documentation in R/brain_gen.R
 \name{brain_warp}
 \alias{brain_warp}
-\title{Title}
+\title{Create gif from brain image data}
 \usage{
 brain_warp(
   file,
-  color_palette = hcl.colors(n = 6, palette = "Sunset"),
+  color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8),
+  color_background = "#000000",
   loop = TRUE,
   delay = 0.05,
-  width = 600,
-  height = 800,
-  z_offset = 0.25,
+  trim_start = 0.25,
   output_dir = "brain_warp",
   gif_file = "brain_warp.gif",
   clean_files = TRUE
 )
 }
 \arguments{
-\item{delay}{Numeric; time to show each image in seconds}
+\item{file}{Character; File path of extension \code{.nii.gz}}
 
-\item{height}{}
+\item{color_palette}{Character vector of color codes}
+
+\item{loop}{Logical; If \code{TRUE} images will play then reverse}
+
+\item{delay}{Numeric; Time delay for each image in seconds. Increase to slow gif}
+
+\item{trim_start}{Numeric; Increasing value will remove frames at beginning of
+gif e.g., empty frames with only background color}
+
+\item{output_dir}{Character; If missing, folder will be created in current working directory.}
+
+\item{gif_file}{Character; File name of gif}
+
+\item{clean_files}{Logical; Set to \code{TRUE} to remove png files in \code{output_dir}}
 }
 \value{
 
 }
 \description{
-Title
+Create gif from brain image data
 }
 \examples{
+library(neurogen)
+nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
+brain_warp(file = nii_path,
+           color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8))
+           )
 
 }
