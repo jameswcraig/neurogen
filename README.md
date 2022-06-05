@@ -1,4 +1,4 @@
-# neurogen
+# neurogen <img src="vignettes/img/neurogen_logo.png" width = "250" align = "right"/>
 
 An R package for creating generative art using Brain Imaging Data.  The `neurogen` package was born from a collaboration with brothers Daniel and [Tyler Wishard, UCLA](https://www.wishard.bio/c-v) for a proposal at the 2022 Organization of Human Brain Mapping in Glasgow, Scotland - which is titled ["Neuro-Fungible Tokens"](https://www.wishard.bio/art). Proceeds from the sale of any NFT's will be donated to organizations conducting neurological disease research.
 
@@ -6,12 +6,11 @@ Tyler is a Ph.D. candidate in the Neuroscience Interdisciplinary Program at UCLA
 
 All example image data provided in package was produced using a 7-tesla MRI of Tyler Wishard's brain, aka 'Ty's Brain' and can be found in `inst/data`.
 
-![Brain Infuse](vignettes/img/brain_infuse.gif)
+<img src="vignettes/img/brain_infuse.gif" width = "625"/>
 
 ---
 
-![Brain Warp Alt](vignettes/img/brain_warp_alt.gif)
-
+<img src="vignettes/img/brain_warp_alt.gif" width = "600"/>
 
 ## Installation
 
@@ -22,7 +21,7 @@ devtools::install_github("jameswcraig/neurogen")
 ## Usage
 
 ```
-library(neuro_gen)
+library(neurogen)
 
 # Get Ty's brain...
 nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
@@ -42,7 +41,7 @@ brain_infuse(file = nii_path,
 )
 ```
 
-![Brain Infuse Alt](vignettes/img/brain_infuse_alt.gif)
+<img src="vignettes/img/brain_infuse_alt.gif" width = "625"/>
 
 ### Brain Warp
   
@@ -54,6 +53,5 @@ brain_warp(file = nii_path,
 )
 ```
 
-![Brain Warp](vignettes/img/brain_warp.gif)
+<img src="vignettes/img/brain_warp.gif" width = "600"/>
 
-  
