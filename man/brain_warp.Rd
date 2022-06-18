@@ -11,6 +11,9 @@ brain_warp(
   loop = TRUE,
   delay = 0.05,
   trim_start = 0.25,
+  trim_end = 0.05,
+  height = 860,
+  width = 640,
   output_dir = "brain_warp",
   gif_file = "brain_warp.gif",
   clean_files = TRUE
@@ -21,12 +24,21 @@ brain_warp(
 
 \item{color_palette}{Character vector of color codes}
 
+\item{color_background}{Character; color code}
+
 \item{loop}{Logical; If \code{TRUE} images will play then reverse}
 
 \item{delay}{Numeric; Time delay for each image in seconds. Increase to slow gif}
 
 \item{trim_start}{Numeric; Increasing value will remove frames at beginning of
 gif e.g., empty frames with only background color}
+
+\item{trim_end}{Numeric; Increasing value will remove frames at end of
+gif e.g., empty frames with only background color}
+
+\item{height}{Numeric; Number of pixels}
+
+\item{width}{Numeric; Number of pixels}
 
 \item{output_dir}{Character; If missing, folder will be created in current working directory.}
 
@@ -45,6 +57,6 @@ library(neurogen)
 nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
 brain_warp(file = nii_path,
            color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8))
-           )
+
 
 }

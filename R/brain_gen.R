@@ -3,11 +3,15 @@
 #'
 #' @param file Character; File path of extension \code{.nii.gz}
 #' @param color_palette Character vector of color codes
-#' @param color_palette Character vector of color codes
+#' @param color_background Character; color code
 #' @param loop Logical; If \code{TRUE} images will play then reverse
 #' @param delay Numeric; Time delay for each image in seconds. Increase to slow gif
 #' @param trim_start Numeric; Increasing value will remove frames at beginning of
 #' gif e.g., empty frames with only background color
+#' @param trim_end Numeric; Increasing value will remove frames at end of
+#' gif e.g., empty frames with only background color
+#' @param height Numeric; Number of pixels
+#' @param width Numeric; Number of pixels
 #' @param output_dir Character; If missing, folder will be created in current working directory.
 #' @param gif_file Character; File name of gif
 #' @param clean_files Logical; Set to \code{TRUE} to remove png files in \code{output_dir}
@@ -20,7 +24,7 @@
 #' nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
 #' brain_warp(file = nii_path,
 #'            color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8))
-#'            )
+#'
 #'
 brain_warp <- function(file,
                        color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8),
@@ -28,6 +32,9 @@ brain_warp <- function(file,
                        loop = TRUE,
                        delay = 0.05,
                        trim_start = 0.25,
+                       trim_end = 0.05,
+                       height = 860,
+                       width = 640,
                        output_dir = "brain_warp",
                        gif_file = "brain_warp.gif",
                        clean_files = TRUE) {
@@ -44,7 +51,9 @@ brain_warp <- function(file,
   }
 
   stopifnot(trim_start %% 1 == trim_start)
-  total_frames <- dim(nii)[3]
+
+  dimensions <- dim(nii)
+  total_frames <- dimensions[3]
   z <- round(total_frames * trim_start, 0)
 
   if (z > total_frames) {
@@ -54,21 +63,31 @@ brain_warp <- function(file,
     frames <- total_frames - z
   }
 
+  stopifnot(trim_end %% 1 == trim_end)
+  frames <- round(frames * (1-trim_end))
+
+  x <- 1:dimensions[1]
+  y <- 1:dimensions[2]
+
   frames_vec <- c(1:frames)
   progress_bar <- txtProgressBar(min=0, max=frames, style = 1, char="=")
 
-  width <- 600
-  height <- 800
+  frames_length <- length(frames_vec)
 
   col <- c(color_background,color_palette)
 
   for (i in seq_along(frames_vec)) {
-    png(paste0(output_dir, "/brain", i, ".png"), bg = "transparent",
+    png(paste0(output_dir, "/brain", i, ".png"), bg = color_background,
         height = height, width = width, antialias = "none")
-    image(nii,
-          z = z + i,
-          plot.type = "single",
-          col = col)
+
+    z_matrix <- nii[,, z + i]
+
+    image(x,
+          y,
+          z_matrix,
+          col=col,
+          xlab="",ylab="",
+          xaxt="n",yaxt="n")
     dev.off()
     setTxtProgressBar(progress_bar, value = i)
   }
@@ -109,13 +128,17 @@ brain_warp <- function(file,
 #'
 #' @param file Character; File path of extension \code{.nii.gz}
 #' @param color_palette Character vector of color codes
-#' @param color_background Character hex code giving color background
+#' @param color_background Character; color code
 #' @param infuse_rate Numeric; Between 0.5-0.99 e.g., \code{infusion_rate} must be >= 50%.
 #' Higher values infuse color at greater intervals.
 #' @param loop Logical; If \code{TRUE} images will play then reverse
 #' @param delay Numeric; Time delay for each image in seconds. Increase to slow gif
 #' @param trim_start Numeric; Increasing value will remove frames at beginning of
 #' gif e.g., empty frames with only background color
+#' @param trim_end Numeric; Increasing value will remove frames at end of
+#' gif e.g., empty frames with only background color
+#' @param height Numeric; Number of pixels
+#' @param width Numeric; Number of pixels
 #' @param output_dir Character; If missing, folder will be created in current working directory.
 #' @param gif_file Character; File name of gif
 #' @param clean_files Logical; Set to \code{TRUE} to remove png files in \code{output_dir}
@@ -131,7 +154,7 @@ brain_warp <- function(file,
 #'              infuse_rate = 0.1,
 #'              trim_start = 0.31,
 #'              trim_end = 0.08)
-#'              )
+#'
 #'
 brain_infuse <- function(file,
                        color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8),
@@ -141,6 +164,8 @@ brain_infuse <- function(file,
                        delay = 0.05,
                        trim_start = 0.25,
                        trim_end = 0.05,
+                       height = 860,
+                       width = 640,
                        output_dir = "brain_infuse",
                        gif_file = "brain_infuse.gif",
                        clean_files = TRUE) {
@@ -180,9 +205,6 @@ brain_infuse <- function(file,
   frames_vec <- c(1:frames)
   progress_bar <- txtProgressBar(min=0, max=frames, style = 1, char="=")
 
-  width <- 600
-  height <- 800
-
   grey_layers_vec <- get_grey_layers(frames_vec, infuse_rate)
 
   layers_length <- length(grey_layers_vec)
@@ -197,7 +219,7 @@ brain_infuse <- function(file,
   }
 
   for (i in seq_along(frames_vec)) {
-    png(paste0(output_dir, "/brain", i, ".png"), bg = "transparent",
+    png(paste0(output_dir, "/brain", i, ".png"), bg = color_background,
         height = height, width = width, antialias = "none")
 
     z_matrix <- nii[,, z + i]
@@ -213,8 +235,7 @@ brain_infuse <- function(file,
           z_matrix,
           col=col,
           xlab="",ylab="",
-          xaxt="n",yaxt="n",
-          labels = FALSE)
+          xaxt="n",yaxt="n")
     dev.off()
     setTxtProgressBar(progress_bar, value = i)
   }
@@ -249,6 +270,136 @@ brain_infuse <- function(file,
 
   return(gif_file_path)
 }
+
+
+#' Create gif from brain image data
+#'
+#' @param file Character; File path of extension \code{.nii.gz}
+#' @param color_palette Character vector of color codes
+#' @param color_background Character; color code
+#' @param loop Logical; If \code{TRUE} images will play then reverse
+#' @param delay Numeric; Time delay for each image in seconds. Increase to slow gif
+#' @param trim_start Numeric; Increasing value will remove frames at beginning of
+#' gif e.g., empty frames with only background color
+#' @param trim_end Numeric; Increasing value will remove frames at end of
+#' gif e.g., empty frames with only background color
+#' @param height Numeric; Number of pixels
+#' @param width Numeric; Number of pixels
+#' @param output_dir Character; If missing, folder will be created in current working directory.
+#' @param gif_file Character; File name of gif
+#' @param clean_files Logical; Set to \code{TRUE} to remove png files in \code{output_dir}
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' library(neurogen)
+#' nii_path <- system.file(package = "neurogen", "data", "Ty_brain.nii.gz")
+#' brain_static(file = nii_path,
+#'            color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8))
+#'
+#'
+brain_contour <- function(file,
+                       color_palette = RColorBrewer::brewer.pal(name = "Set3", n = 8),
+                       color_background = "#000000",
+                       loop = TRUE,
+                       delay = 0.05,
+                       trim_start = 0.25,
+                       trim_end = 0.05,
+                       height = 860,
+                       width = 640,
+                       output_dir = "brain_contour",
+                       gif_file = "brain_contour.gif",
+                       clean_files = TRUE) {
+
+  if (file.exists(file)) {
+    nii <- oro.nifti::readNIfTI(file, reorient = FALSE)
+  } else {
+    stop(file, " not found")
+  }
+
+  if (!dir.exists(output_dir)) {
+    output_dir <- file.path(getwd(), output_dir)
+    dir.create(output_dir)
+  }
+
+  stopifnot(trim_start %% 1 == trim_start)
+
+  dimensions <- dim(nii)
+  total_frames <- dimensions[3]
+  z <- round(total_frames * trim_start, 0)
+
+  if (z > total_frames) {
+    stop("There are ", total_frames, " total frames available",
+         "Decrease `trim_start` value.")
+  } else {
+    frames <- total_frames - z
+  }
+
+  stopifnot(trim_end %% 1 == trim_end)
+  frames <- round(frames * (1-trim_end))
+
+  x <- 1:dimensions[1]
+  y <- 1:dimensions[2]
+
+  frames_vec <- c(1:frames)
+  progress_bar <- txtProgressBar(min=0, max=frames, style = 1, char="=")
+
+  frames_length <- length(frames_vec)
+
+  col <- c(color_background, gray(0:64/64))
+
+  for (i in seq_along(frames_vec)) {
+    png(paste0(output_dir, "/brain", i, ".png"), bg = color_background,
+        height = height, width = width, antialias = "none")
+
+    z_matrix <- nii[,, z + i]
+
+    image(x,
+          y,
+          z_matrix,
+          col=col,
+          xlab="",ylab="",
+          xaxt="n",yaxt="n")
+
+    contour(x, y, z_matrix,
+            add = TRUE, col = color_palette, drawlabels = FALSE)
+
+    dev.off()
+    setTxtProgressBar(progress_bar, value = i)
+  }
+
+
+  files <- list.files(output_dir,
+                      pattern = "\\.png$",
+                      full.names = TRUE)
+
+  files_asc <- gtools::mixedsort(files)
+
+  if (loop) {
+    files_desc <- gtools::mixedsort(files, decreasing = TRUE)
+    files_full <- c(files_asc, files_desc)
+  } else {
+    files_full <- files_asc
+  }
+
+  gif_file_path <- file.path(output_dir, gif_file)
+
+  gifski::gifski(files_full,
+                 gif_file = gif_file_path,
+                 delay = delay,
+                 width = width,
+                 height = height)
+
+  if (clean_files) {
+    file.remove(files)
+  }
+
+  message("File saved to ", gif_file_path)
+
+  return(gif_file_path)
+}
+
 
 addNoise <- function(mtx, noise) {
   if (!is.matrix(mtx)) {
